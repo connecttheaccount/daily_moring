@@ -56,5 +56,5 @@ wm = WeChatMessage(client)
 wea, temperature = get_weather()
 future_date, future_week, future_dayweather, future_nightweather, future_daytemp, future_nighttemp = get_forecasts()
 data = {"weather":{"value":wea},"temperature":{"value":temperature},"future_date":{"value":future_date},"future_week":{"value":future_week},"love_days":{"value":get_count()},"birthday_left":{"value":get_birthday()},"words":{"value":get_words(), "color":get_random_color()}}
-res = wm.send_template(user_id, template_id, data)
+res = wm.send_template(user_id, template_id, data, user_idone)
 print(res)
