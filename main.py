@@ -15,7 +15,9 @@ app_id = os.environ["APP_ID"]
 app_secret = os.environ["APP_SECRET"]
 
 user_id = os.environ["USER_ID"]
+user_idone = os.environ["USER_IDONE"]
 template_id = os.environ["TEMPLATE_ID"]
+city_code = os.environ["city_code"]
 
 
 def get_weather():
@@ -23,7 +25,11 @@ def get_weather():
   res = requests.get(url).json()
   weather = res['data']['list'][0]
   return weather['weather'], math.floor(weather['temp'])
-
+def get_forecasts():
+  url = "https://restapi.amap.com/v3/weather/weatherInfo?city="+city_code+"key=39299f20906323655279449732fb4c0a&extensions=all"
+  res = requests.get(url).json
+  forecasts_wather=res['data']['forecasts']['casts'][0]
+  return forecasts_wather['date'],forecasts_wather['week'],forecasts_wather['dayweather'],forecasts_wather['nightweather'],forecasts_wather['daytemp'],forecasts_wather['nighttemp']
 def get_count():
   delta = today - datetime.strptime(start_date, "%Y-%m-%d")
   return delta.days
@@ -48,6 +54,7 @@ client = WeChatClient(app_id, app_secret)
 
 wm = WeChatMessage(client)
 wea, temperature = get_weather()
-data = {"weather":{"value":wea},"temperature":{"value":temperature},"love_days":{"value":get_count()},"birthday_left":{"value":get_birthday()},"words":{"value":get_words(), "color":get_random_color()}}
+future_date, future_week, future_dayweather, future_nightweather, future_daytemp, future_nighttemp = get_forecasts()
+data = {"weather":{"value":wea},"temperature":{"value":temperature},"future_date":{"value":future_date},"future_week":{"value":future_week},"love_days":{"value":get_count()},"birthday_left":{"value":get_birthday()},"words":{"value":get_words(), "color":get_random_color()}}
 res = wm.send_template(user_id, template_id, data)
 print(res)
